@@ -4,7 +4,15 @@ pub fn handle_request(method : String, path : String, body : String, store : Sto
   match method {
     "GET" => {
       match parts[1] {
-        "todos" => handle_list_todos(store)
+        "todos" => {
+          // GET /todos/search?q=keyword
+          if parts.length() >= 3 && parts[2] == "search" {
+            handle_search_todos(extract_query(body, "q"), store)
+          } else {
+            handle_list_todos(store)
+          }
+        }
+        "stats" => store.stats()
         _ => json_error(404, "not found")
       }
     }
@@ -17,10 +25,13 @@ pub fn handle_request(method : String, path : String, body : String, store : Sto
     "PUT" => {
       match parts[1] {
         "todos" => {
-          // PUT /todos/1
           if parts.length() >= 3 {
             let id = parts[2].parse_int().unwrap_or(-1)
-            handle_toggle_todo(id, store)
+            if !validate_id(id) {
+              json_error(400, "invalid id")
+            } else {
+              handle_toggle_todo(id, store)
+            }
           } else {
             json_error(400, "missing id")
           }
@@ -33,7 +44,11 @@ pub fn handle_request(method : String, path : String, body : String, store : Sto
         "todos" => {
           if parts.length() >= 3 {
             let id = parts[2].parse_int().unwrap_or(-1)
-            handle_delete_todo(id, store)
+            if !validate_id(id) {
+              json_error(400, "invalid id")
+            } else {
+              handle_delete_todo(id, store)
+            }
           } else {
             json_error(400, "missing id")
           }
@@ -46,7 +61,7 @@ pub fn handle_request(method : String, path : String, body : String, store : Sto
 }
 
 fn handle_list_todos(store : Store) -> String {
-  let todos = store.load_all()
+  let todos = sort_by_priority(store.load_all())
   let mut items : Array[String] = []
   for t in todos {
     items.push(todo_to_json(t))
@@ -54,11 +69,26 @@ fn handle_list_todos(store : Store) -> String {
   "{\"todos\": [\(items.join(","))]}"
 }
 
+fn handle_search_todos(keyword : String, store : Store) -> String {
+  let todos = store.search_by_keyword(keyword)
+  let mut items : Array[String] = []
+  for t in todos {
+    items.push(todo_to_json(t))
+  }
+  "{\"todos\": [\(items.join(","))], \"count\": \(items.length())}"
+}
+
 fn handle_create_todo(body : String, store : Store) -> String {
-  // 简单解析 JSON 获取 title
   let title = extract_json_string(body, "title")
   let description = extract_json_string(body, "description")
   let priority_str = extract_json_string(body, "priority")
+
+  // 输入校验
+  match validate_todo_input(title, description, priority_str) {
+    Some(err) => return json_error(400, err)
+    None => {}
+  }
+
   let priority = match priority_str {
     "high" => High
     "medium" => Medium
@@ -108,4 +138,18 @@ fn extract_json_string(json : String, key : String) -> String {
 
 fn json_error(code : Int, msg : String) -> String {
   "{\"error\": \(code), \"message\": \"\(msg)\"}"
+}
+
+/// 从查询字符串中提取参数值
+fn extract_query(query : String, key : String) -> String {
+  let search = "\(key)="
+  let start = query.find(search)
+  if start.is_none() { return "" }
+  let s = start.unwrap() + search.length()
+  let end = query.find_from(s, "&")
+  if end.is_none() {
+    query.substring(s, query.length())
+  } else {
+    query.substring(s, end.unwrap())
+  }
 }
