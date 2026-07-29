@@ -1,6 +1,13 @@
 {
   "name": "MoonTodo",
   "version": "0.1.0",
-  "description": "轻量级待办事项管理应用",
-  "license": "MIT"
+  "description": "轻量级待办事项管理应用 —— 基于 MoonBit 构建的 Web 应用",
+  "license": "MIT",
+  "repository": "https://github.com/Texas-png/Texas",
+  "keywords": [
+    "moonbit",
+    "todo",
+    "web",
+    "rest-api"
+  ]
 }
