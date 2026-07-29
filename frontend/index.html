@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoonTodo - 待办事项管理</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌙 MoonTodo</h1>
+      <p class="subtitle">轻量级待办事项管理</p>
+    </header>
+
+    <main>
+      <section class="add-todo">
+        <h2>新增待办</h2>
+        <form id="todo-form">
+          <div class="form-row">
+            <input type="text" id="todo-title" placeholder="待办标题" required />
+            <select id="todo-priority">
+              <option value="low">低优先级</option>
+              <option value="medium" selected>中优先级</option>
+              <option value="high">高优先级</option>
+            </select>
+            <button type="submit">添加</button>
+          </div>
+          <textarea id="todo-desc" placeholder="描述（可选）" rows="2"></textarea>
+        </form>
+      </section>
+
+      <section class="filters">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="pending">待办</button>
+        <button class="filter-btn" data-filter="completed">已完成</button>
+      </section>
+
+      <section class="todo-list" id="todo-list">
+        <p class="loading">加载中...</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>MoonTodo v0.1 · Powered by MoonBit</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

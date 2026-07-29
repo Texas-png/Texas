@@ -1,0 +1,7 @@
+{
+  "import": [
+    "moonbitlang/core",
+    "moonbitlang/x/http",
+    "MoonTodo/lib"
+  ]
+}

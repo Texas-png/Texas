@@ -1,0 +1,6 @@
+/target/
+.env
+node_modules/
+*.exe
+*.log
+frontend/node_modules/
