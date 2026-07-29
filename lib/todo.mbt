@@ -47,6 +47,29 @@ pub fn todo_to_csv(t : Todo) -> String {
   "\(t.id),\(t.title),\(t.description),\(prio),\(st),\(t.created_at)"
 }
 
+/// 按优先级排序（高 → 低）
+pub fn sort_by_priority(todos : Array[Todo]) -> Array[Todo] {
+  let mut sorted = todos.clone()
+  sorted.sort(fn(a, b) {
+    let pa = match a.priority { High => 3; Medium => 2; Low => 1 }
+    let pb = match b.priority { High => 3; Medium => 2; Low => 1 }
+    pb - pa
+  })
+  sorted
+}
+
+/// 获取待办总数
+pub fn count_todos(todos : Array[Todo]) -> (Int, Int) {
+  let total = todos.length()
+  let done = todos.count(fn(t) { match t.status { Completed => true; _ => false } })
+  (total, done)
+}
+
+/// 格式化创建时间为可读字符串
+pub fn format_date(t : Todo) -> String {
+  t.created_at
+}
+
 /// 从 CSV 行解析 Todo
 pub fn parse_csv(line : String) -> Todo!String {
   let parts : Array[String] = line.split(",")
