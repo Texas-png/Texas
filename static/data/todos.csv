@@ -1,0 +1,6 @@
+id,title,description,priority,status,created_at
+1,学习 MoonBit 基础语法,掌握 MoonBit 的核心语言特性,high,pending,2026-07-29
+2,完成项目结构搭建,参照 MoonBit_ws 搭建项目骨架,medium,completed,2026-07-29
+3,编写 API 文档,完善 RESTful API 的接口文档,medium,pending,2026-07-29
+4,设计前端 UI 界面,使用原生技术实现响应式设计,low,pending,2026-07-29
+5,部署到 GitHub,将项目推送至远程仓库,low,pending,2026-07-29
