@@ -1,5 +1,6 @@
 /target/
 .env
+项目申报书.md
 node_modules/
 *.exe
 *.log
