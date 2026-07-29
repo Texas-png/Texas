@@ -42,6 +42,26 @@ pub fn toggle_todo(self : Store, id : Int) -> Todo? {
   found
 }
 
+/// 按状态筛选
+pub fn filter_by_status(self : Store, status : Status) -> Array[Todo] {
+  self.todos.filter(fn(t) { t.status == status })
+}
+
+/// 按关键词搜索标题
+pub fn search_by_keyword(self : Store, keyword : String) -> Array[Todo] {
+  let kw = keyword.trim().to_lower()
+  if kw.is_empty() { return self.todos }
+  self.todos.filter(fn(t) {
+    t.title.to_lower().contains(kw) || t.description.to_lower().contains(kw)
+  })
+}
+
+/// 获取统计信息
+pub fn stats(self : Store) -> String {
+  let (total, done) = count_todos(self.todos)
+  "{\"total\": \(total), \"completed\": \(done), \"pending\": \(total - done)}"
+}
+
 /// 删除 Todo
 pub fn remove_todo(self : Store, id : Int) -> Bool {
   let len = self.todos.length()
